@@ -33,18 +33,20 @@ export const usersRouter = async (req, res) => {
   }
 
   if (method === 'POST') {
-    const body = await bodyParser(req);
-    // validateUser(body);
-    if (validateUser(body)) {
-      res.writeHead(201);
-      res.end(JSON.stringify(usersService.create(body)));
+    try {
+      const body = await bodyParser(req);
+      if (validateUser(body)) {
+        res.writeHead(201);
+        res.end(JSON.stringify(usersService.create(body)));
+        return;
+      }
+      throw new Error('No validate');
+    } catch (err) {
+      res.writeHead(400);
+      const error = `Invalid format or required user property`;
+      res.end(JSON.stringify({ error }));
       return;
     }
-
-    res.writeHead(400);
-    const error = `Invalid format or required user property`;
-    res.end(JSON.stringify({ error }));
-    return;
   }
 
   if (method === 'PUT' && uuid) {
