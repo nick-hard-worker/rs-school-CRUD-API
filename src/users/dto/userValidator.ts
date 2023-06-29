@@ -2,10 +2,16 @@
 // age — user's age (number, required);
 // hobbies — user's hobbies (array of strings or empty array, required);
 
-export const validateUser = (user) => {
+export interface IUserRequestDTO {
+  username: string;
+  age: number;
+  hobbies: string[];
+}
+
+export const validateUser = (user: any) => {
   const { username, age, hobbies } = user;
 
-  const isValidUsername = (username) => {
+  const isValidUsername = (username: any) => {
     // username is 8-20 characters long
     // no _ or.at the beginning 
     // no __ or _.or._ or..inside
@@ -20,20 +26,21 @@ export const validateUser = (user) => {
     return false;
   };
 
-  const isValidAge = (age) => {
+  const isValidAge = (age: any) => {
     if (age && Number.isInteger(age)) return true;
     return false;
   };
 
-  const isValidHobby = (hobby) => {
+  const isValidHobby = (hobby: any) => {
     const regExpHobbies = /[a-z\s]{2,50}/i;
     if (typeof (hobby) === 'string') {
       hobby = hobby.trim();
       return regExpHobbies.test(hobby);
     }
+    return false
   };
 
-  const isValidHobbies = (hobbies) => {
+  const isValidHobbies = (hobbies: any) => {
     if (Array.isArray(hobbies)) {
       if (hobbies.length === 0) return true;
 
