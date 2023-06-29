@@ -20,5 +20,5 @@ function requestHandler(req: IncomingMessage, res: ServerResponse) {
   }
 
   res.writeHead(404);
-  res.end(JSON.stringify({ error: "Resource not found" }));
+  res.end(JSON.stringify({ error: `Requested resource ${req.url} not found` }));
 }

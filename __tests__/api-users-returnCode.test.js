@@ -36,6 +36,15 @@ describe('API /users test, scenario1:', () => {
     }
   });
 
+  test('Try to GET invalid entity', async () => {
+    try {
+      const response = await axios.get(`/some-url`);
+    } catch (error) {
+      expect(error.response.status).toBe(404);
+      expect(error.response.data).toHaveProperty('error');
+    }
+  });
+
   test('Try to GET user with invalid UUID', async () => {
     const notUUID = 'eeffre7-6feef';
     try {
