@@ -5,6 +5,17 @@ axios.defaults.baseURL = 'http://localhost:4000/api';
 
 describe('API /users test, scenario1:', () => {
   let userId;
+  const newUser = {
+    username: 'John_Doe',
+    age: 34,
+    hobbies: ['hobby1', 'second']
+  };
+
+  const updateUser = {
+    username: 'John_DoeNEW',
+    age: 44,
+    hobbies: ['hobby1', 'second']
+  };
 
   test('Should GET all records - code 200', async () => {
     const response = await axios.get('/users');
@@ -12,11 +23,11 @@ describe('API /users test, scenario1:', () => {
   });
 
   test('Should POST Create a new record - code 201', async () => {
-    const newUser = { name: 'John Doe', email: 'johndoe@example.com' };
+
     const response = await axios.post('/users', newUser);
     expect(response.status).toBe(201);
-    expect(response.data.name).toBe('John Doe');
-    expect(response.data.email).toBe('johndoe@example.com');
+    expect(response.data.username).toBe('John_Doe');
+    expect(+response.data.age).toBe(34);
     userId = response.data.id;
   });
 
@@ -56,19 +67,16 @@ describe('API /users test, scenario1:', () => {
   });
 
   test('Update the created record', async () => {
-    const updatedRecord = { name: 'John Smith', email: 'johnsmith@example.com' };
-    const response = await axios.put(`/users/${userId}`, updatedRecord);
+    const response = await axios.put(`/users/${userId}`, updateUser);
     expect(response.status).toBe(200);
-    expect(response.data.name).toBe('John Smith');
-    expect(response.data.email).toBe('johnsmith@example.com');
+    expect(response.data.username).toBe('John_DoeNEW');
+    expect(+response.data.age).toBe(44);
   });
 
   test('Try to UPDATE record with random uuid', async () => {
     const randUUID = randomUUID();
-    const updatedRecord = { name: 'John Smith', email: 'johnsmith@example.com' };
-
     try {
-      const response = await axios.put(`/users/${randUUID}`, updatedRecord);
+      const response = await axios.put(`/users/${randUUID}`, updateUser);
     } catch (error) {
       expect(error.response.status).toBe(404);
       expect(error.response.data.error).toContain(randUUID);
@@ -77,10 +85,8 @@ describe('API /users test, scenario1:', () => {
 
   test('Try to UPDATE record with invalid uuid', async () => {
     const notUUID = 'rhur767-5486jirj';
-    const updatedRecord = { name: 'John Smith', email: 'johnsmith@example.com' };
-
     try {
-      const response = await axios.put(`/users/${notUUID}`, updatedRecord);
+      const response = await axios.put(`/users/${notUUID}`, updateUser);
     } catch (error) {
       expect(error.response.status).toBe(400);
       expect(error.response.data.error).toContain(notUUID);

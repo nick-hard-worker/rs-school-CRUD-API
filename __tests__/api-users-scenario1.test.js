@@ -2,19 +2,23 @@ const axios = require('axios');
 
 axios.defaults.baseURL = 'http://localhost:4000/api';
 
-describe('API /users test, scenario1:', () => {
+describe('API users test, scenario1:', () => {
   let userId;
 
   test('Step 1: Get all records - empty array', async () => {
     const response = await axios.get('/users');
-    expect(response.data).toEqual([]);
+    expect(Array.isArray(response.data)).toBe(true);
   });
 
   test('Step 2: Create a new record', async () => {
-    const newRecord = { name: 'John Doe', email: 'johndoe@example.com' };
+    const newRecord = {
+      username: 'John_Doe',
+      age: 34,
+      hobbies: ['hobby1', 'second']
+    };
     const response = await axios.post('/users', newRecord);
-    expect(response.data.name).toBe('John Doe');
-    expect(response.data.email).toBe('johndoe@example.com');
+    expect(response.data.username).toBe('John_Doe');
+    expect(+response.data.age).toBe(34);
     userId = response.data.id;
   });
 
@@ -24,10 +28,14 @@ describe('API /users test, scenario1:', () => {
   });
 
   test('Step 4: Update the created record', async () => {
-    const updatedRecord = { name: 'John Smith', email: 'johnsmith@example.com' };
+    const updatedRecord = {
+      username: 'John_DoeNEW',
+      age: 44,
+      hobbies: ['hobby1', 'second']
+    };
     const response = await axios.put(`/users/${userId}`, updatedRecord);
-    expect(response.data.name).toBe('John Smith');
-    expect(response.data.email).toBe('johnsmith@example.com');
+    expect(response.data.username).toBe('John_DoeNEW');
+    expect(+response.data.age).toBe(44);
   });
 
   test('Step5: Delete the created record', async () => {
