@@ -1,6 +1,7 @@
 import * as usersService from './usersService.js';
 import { getUUIDFromUrl } from '../utils/getIdFromUrl.js';
 import { bodyParser } from '../utils/bodyParser.js';
+import { validateUser } from './dto/userValidator.js';
 
 export const usersRouter = async (req, res) => {
   const method = req.method;
@@ -33,8 +34,16 @@ export const usersRouter = async (req, res) => {
 
   if (method === 'POST') {
     const body = await bodyParser(req);
-    res.writeHead(201);
-    res.end(JSON.stringify(usersService.create(body)));
+    // validateUser(body);
+    if (validateUser(body)) {
+      res.writeHead(201);
+      res.end(JSON.stringify(usersService.create(body)));
+      return;
+    }
+
+    res.writeHead(400);
+    const error = `Invalid format or required user property`;
+    res.end(JSON.stringify({ error }));
     return;
   }
 
