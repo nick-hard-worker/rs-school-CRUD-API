@@ -12,12 +12,9 @@ export const validateUser = (user: any) => {
   const { username, age, hobbies } = user;
 
   const isValidUsername = (username: any) => {
-    // username is 8-20 characters long
-    // no _ or.at the beginning 
-    // no __ or _.or._ or..inside
-    // allowed characters [a-zA-Z0-9._]
-    // no _ or.at the end
-    const regExpUsername = /^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
+    // username is 2 or more characters long, max 50
+    // allowed characters [a-zA-Z]
+    const regExpUsername = /^[a-zA-Z]{2,50}$/;
 
     if (username &&
       typeof username === 'string' &&
@@ -32,7 +29,7 @@ export const validateUser = (user: any) => {
   };
 
   const isValidHobby = (hobby: any) => {
-    const regExpHobbies = /[a-z\s]{2,50}/i;
+    const regExpHobbies = /[a-z\s]{2,100}/i;
     if (typeof (hobby) === 'string') {
       hobby = hobby.trim();
       return regExpHobbies.test(hobby);
