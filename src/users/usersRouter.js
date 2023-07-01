@@ -1,7 +1,7 @@
 import * as usersService from './usersService.js';
 import { getUUIDFromUrl } from '../utils/getIdFromUrl.js';
 import { bodyParser } from '../utils/bodyParser.js';
-import { validateUser, IUserRequestDTO } from './dto/userValidator.js';
+import { validateUser } from './dto/userValidator.ts';
 
 export const usersRouter = async (req, res) => {
   const method = req.method;

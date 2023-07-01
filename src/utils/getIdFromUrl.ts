@@ -3,12 +3,14 @@ export interface ICheckUUID {
   id: string
 }
 
-export const getUUIDFromUrl = (url: string): ICheckUUID | undefined => {
-  const parts = url.split('/');
-  if (parts.length === 4) {
-    const id = parts.pop() as string;
-    if (isValidUUID(id)) return { valid: true, id };
-    return { valid: false, id };
+export const getUUIDFromUrl = (url: string | undefined): ICheckUUID | undefined => {
+  if (url) {
+    const parts = url.split('/');
+    if (parts.length === 4) {
+      const id = parts.pop() as string;
+      if (isValidUUID(id)) return { valid: true, id };
+      return { valid: false, id };
+    }
   }
 };
 
