@@ -14,9 +14,12 @@ function requestHandler(req: IncomingMessage, res: ServerResponse) {
   res.setHeader("Content-Type", "application/json");
   console.debug(req.method, req.url)
 
-  if (req.url?.startsWith('/api/users')) {
-    usersRouter(req, res);
-    return
+  if (req.url) {
+    if (req.url.slice(-1) === '/') { req.url = req.url.slice(0, -1) }
+    if (req.url.startsWith('/api/users')) {
+      usersRouter(req, res);
+      return
+    }
   }
 
   res.writeHead(404);

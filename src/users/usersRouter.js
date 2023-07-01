@@ -7,13 +7,40 @@ export const usersRouter = async (req, res) => {
   const method = req.method;
   const uuid = getUUIDFromUrl(req.url);
 
-  if (method === 'GET' && !uuid) {
-    res.writeHead(200);
-    res.end(JSON.stringify(usersService.getAll()));
+  if (!uuid) {
+    if (method === 'GET') {
+      res.writeHead(200);
+      res.end(JSON.stringify(usersService.getAll()));
+      return;
+    }
+
+    if (method === 'POST') {
+      try {
+        const body = await bodyParser(req);
+        if (validateUser(body)) {
+          res.writeHead(201);
+          res.end(JSON.stringify(usersService.create(body)));
+          return;
+        }
+        throw new Error('No validate');
+      } catch (err) {
+        res.writeHead(400);
+        const error = `Invalid format or required user property`;
+        res.end(JSON.stringify({ error }));
+        return;
+      }
+    }
+  }
+
+  if (!uuid.valid) {
+    res.writeHead(400);
+    const error = `Invalid format of id, expected UUID, get ${uuid.id}`;
+    res.end(JSON.stringify({ error }));
     return;
   }
 
-  if (method === 'GET' && uuid.valid) {
+  // valid UUID:
+  if (method === 'GET') {
     try {
       const response = usersService.getOne(uuid.id);
       res.writeHead(200);
@@ -26,30 +53,7 @@ export const usersRouter = async (req, res) => {
     }
   }
 
-  if (method === 'GET' && !uuid.valid) {
-    res.writeHead(400);
-    const error = `Invalid format of id, expected UUID, get ${uuid.id}`;
-    res.end(JSON.stringify({ error }));
-  }
-
-  if (method === 'POST') {
-    try {
-      const body = await bodyParser(req);
-      if (validateUser(body)) {
-        res.writeHead(201);
-        res.end(JSON.stringify(usersService.create(body)));
-        return;
-      }
-      throw new Error('No validate');
-    } catch (err) {
-      res.writeHead(400);
-      const error = `Invalid format or required user property`;
-      res.end(JSON.stringify({ error }));
-      return;
-    }
-  }
-
-  if (method === 'PUT' && uuid) {
+  if (method === 'PUT') {
     if (uuid.valid) {
       const body = await bodyParser(req);
       try {
@@ -61,13 +65,10 @@ export const usersRouter = async (req, res) => {
         res.writeHead(404);
         res.end(JSON.stringify({ error: err.message }));
       }
-    } else {
-      sendInvalidUUID(uuid, res);
-      return;
     }
   }
 
-  if (method === 'DELETE' && uuid) {
+  if (method === 'DELETE') {
     if (uuid.valid) {
       try {
         usersService.remove(uuid.id);
@@ -78,15 +79,6 @@ export const usersRouter = async (req, res) => {
         res.writeHead(404);
         res.end(JSON.stringify({ error: err.message }));
       }
-    } else {
-      sendInvalidUUID(uuid, res);
-      return;
     }
   }
 };
-
-function sendInvalidUUID(uuid, res) {
-  res.writeHead(400);
-  const error = `Invalid format of id, expected UUID, get ${uuid.id}`;
-  res.end(JSON.stringify({ error }));
-}
