@@ -1,13 +1,14 @@
 import { randomUUID } from 'node:crypto';
-console.log(randomUUID());
+import { IUser } from './entity/user.js'
+import { IUserRequestDTO } from './dto/userValidator.js'
 
-let repoUsers = [];
+let repoUsers: IUser[] = [];
 
 export const getAll = () => {
   return repoUsers;
 };
 
-export const getOne = (id) => {
+export const getOne = (id: string) => {
   const index = repoUsers.findIndex(user => user.id === id);
   if (index !== -1) {
     return repoUsers[index];
@@ -15,23 +16,23 @@ export const getOne = (id) => {
   throw new Error(`Not found user with id ${id}`);
 };
 
-export const create = (newUser) => {
-  newUser.id = randomUUID();
-  repoUsers.push(newUser);
-  return newUser;
+export const create = (newUser: IUserRequestDTO) => {
+  const userToDB: IUser = { ...newUser, id: randomUUID() }
+  repoUsers.push(userToDB);
+  return userToDB;
 };
 
-export const update = (id, body) => {
+export const update = (id: string, body: IUserRequestDTO) => {
   const index = repoUsers.findIndex(user => user.id === id);
   if (index !== -1) {
-    body.id = id;
-    repoUsers[index] = body;
+    const updaterUser: IUser = { ...body, id }
+    repoUsers[index] = updaterUser;
     return repoUsers[index];
   }
   throw new Error(`Not found user with id ${id}`);
 };
 
-export const remove = (id) => {
+export const remove = (id: string) => {
   const index = repoUsers.findIndex(user => user.id === id);
   if (index !== -1) {
     repoUsers = repoUsers.filter(user => user.id !== id);
