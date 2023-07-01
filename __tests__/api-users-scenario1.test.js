@@ -22,7 +22,7 @@ describe('API users test, scenario1:', () => {
     userId = response.data.id;
   });
 
-  test('Step3: Get the created record by user id', async () => {
+  test('Step 3: Get the created record by user id', async () => {
     const response = await axios.get(`/users/${userId}`);
     expect(response.data.id).toBe(userId);
   });
@@ -38,7 +38,7 @@ describe('API users test, scenario1:', () => {
     expect(+response.data.age).toBe(44);
   });
 
-  test('Step5: Delete the created record', async () => {
+  test('Step 5: Delete the created record', async () => {
     const response = await axios.delete(`/users/${userId}`);
     expect(response.status).toBe(204);
   });
