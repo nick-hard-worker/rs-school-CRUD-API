@@ -35,3 +35,16 @@ Check API by path [http://localhost:<your_port>/api/users](http://localhost:4000
 `npm test`
 ```
 Autotest uses Jest library. 
+
+This is User json example for POST, PUT methods:  
+
+```bash
+{
+"username": "someName",
+"age": 33,
+"hobbies": ["hobby1", "hobby2"]
+}
+```
+- `username` — user's name (`string`, **required**),  should be 3 or more characters long, max 50, allowed characters `[a-zA-Z]`
+- `age` — user's age (`number`, **required**), `integer`
+- `hobbies` — user's hobbies (`array` of `strings` or empty `array`, **required**). Hobby string should be 3 or more characters long, max 100, allowed characters `[a-zA-Z], spaces, digits`
